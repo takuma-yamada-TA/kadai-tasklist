@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 
 use App\Task;
 
+
+
+
 class TasksController extends Controller
 {
     /**
@@ -15,12 +18,22 @@ class TasksController extends Controller
      */
     public function index()
     {
-        $tasks = Task::all();
+        $data = [];
+        if (\Auth::check()) {
+            $user = \Auth::user();
+            $tasks = $user->tasks()->orderBy('created_at', 'desc')->paginate(10);
+            
+            $data = [
+                'user' => $user,
+                'tasks' => $tasks,
+            ];
+        }
         
-        return view('tasks.index', [
-            'tasks' => $tasks,
-        ]);
+        return view('welcome', $data);
     }
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -45,16 +58,14 @@ class TasksController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'status' => 'required|max:191',
             'content' => 'required|max:191',
         ]);
-        
-        $task = new Task;
-        $task->status = $request->status;
-        $task->content = $request->content;
-        $task->save();
 
-        return redirect('/');
+        $request->user()->microposts()->create([
+            'content' => $request->content,
+        ]);
+
+        return back();
     }
 
     /**
@@ -117,9 +128,12 @@ class TasksController extends Controller
      */
     public function destroy($id)
     {
-        $task = Task::find($id);
-        $task->delete();
+        $tasks= \App\Tasks::find($id);
 
-        return redirect('/');
+        if (\Auth::id() === $tasks->user_id) {
+            $tasks->delete();
+        }
+
+        return back();
     }
 }
