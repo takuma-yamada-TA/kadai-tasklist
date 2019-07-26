@@ -57,11 +57,11 @@ class TasksController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
+       $this->validate($request, [
             'content' => 'required|max:191',
         ]);
 
-        $request->user()->microposts()->create([
+        $request->user()->tasks()->create([
             'content' => $request->content,
         ]);
 
@@ -79,7 +79,7 @@ class TasksController extends Controller
         $task = Task::find($id);
 
         return view('tasks.show', [
-            'task' => $task,
+            'tasks' => $tasks,
         ]);
     }
 
@@ -94,7 +94,7 @@ class TasksController extends Controller
         $task = Task::find($id);
 
         return view('tasks.edit', [
-            'task' => $task,
+            'tasks' => $tasks,
         ]);
     }
 
@@ -128,7 +128,7 @@ class TasksController extends Controller
      */
     public function destroy($id)
     {
-        $tasks= \App\Tasks::find($id);
+        $tasks= \App\Task::find($id);
 
         if (\Auth::id() === $tasks->user_id) {
             $tasks->delete();
