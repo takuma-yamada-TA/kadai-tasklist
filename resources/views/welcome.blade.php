@@ -30,7 +30,7 @@
 
         <div class="col-sm-8">
             @if (count([$tasks]) > 0)
-                @include('tasks.tasks', ['tasks' => $tasks])
+                {{--@include('tasks.tasks', ['tasks' => $tasks])--}}
             @endif
         </div>
     @else

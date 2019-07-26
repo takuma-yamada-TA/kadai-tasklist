@@ -59,13 +59,16 @@ class TasksController extends Controller
     {
        $this->validate($request, [
             'content' => 'required|max:191',
+            'status' => 'required|max:10'
         ]);
 
         $request->user()->tasks()->create([
             'content' => $request->content,
+            'status' => $request->status
         ]);
 
-        return back();
+        // return back();
+        return redirect('/');
     }
 
     /**
@@ -79,7 +82,7 @@ class TasksController extends Controller
         $task = Task::find($id);
 
         return view('tasks.show', [
-            'tasks' => $tasks,
+            'task' => $task,
         ]);
     }
 
@@ -94,7 +97,7 @@ class TasksController extends Controller
         $task = Task::find($id);
 
         return view('tasks.edit', [
-            'tasks' => $tasks,
+            'task' => $task,
         ]);
     }
 
@@ -134,6 +137,6 @@ class TasksController extends Controller
             $tasks->delete();
         }
 
-        return back();
+        return redirect('/');
     }
 }
