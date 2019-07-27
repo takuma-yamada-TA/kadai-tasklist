@@ -127,9 +127,12 @@ class TasksController extends Controller
             'content' => 'required|max:191',
         ]);
         
-        if (\Auth::id() === $task->user_id) {
+        {
         
         $task = Task::find($id);
+        
+        if (\Auth::id() === $task->user_id) 
+        
         $task->content = $request->content;
         $task->status = $request->status;
         $task->save();
